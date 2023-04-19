@@ -37,10 +37,6 @@
 	"kernel_load_address=0x2080000\0" \
         "kernel_size=0x500000\0" \
         "mmc_loadkernel=load mmc 0 ${kernel_load_address} ${kernel_image}\0" \
-	"ramdisk_image=ebaz4205-image-minimal-ebaz4205-zynq7.cpio.gz.u-boot\0"	\
-	"ramdisk_load_address=0x4000000\0"	\
-        "ramdisk_size=0x5E0000\0" \
-        "mmc_loadramdisk=load mmc 0 ${ramdisk_load_address} ${ramdisk_image}\0" \
 	"devicetree_image=ebaz4205-zynq7.dtb\0"	\
 	"devicetree_load_address=0x2000000\0"	\
         "devicetree_size=0x20000\0"             \
@@ -70,7 +66,7 @@
 		"cp.b 0xE2600000 ${devicetree_load_address} ${devicetree_size} && " \
 		"echo Copying ramdisk... && " \
 		"cp.b 0xE2620000 ${ramdisk_load_address} ${ramdisk_size} && " \
-		"bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}\0" \
+		"bootm ${kernel_load_address} - ${devicetree_load_address}\0" \
 	"qspiboot=echo Copying Linux from QSPI flash to RAM... && " \
 		"sf probe 0 0 0 && " \
 		"sf read ${kernel_load_address} 0x100000 ${kernel_size} && " \
@@ -91,7 +87,7 @@
                         "run leds_bootstate_0;" \
 			"run uenvboot;" \
 			"echo Copying Linux from SD to RAM...;" \
-			"run mmc_loadkernel && run mmc_loaddtb && run mmc_loadramdisk && run leds_bootstate_2;" \
+			"run mmc_loadkernel && run mmc_loaddtb && run leds_bootstate_2;" \
                         "echo Handoff to Linux kernel...;" \
 			"bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}; " \
 		"fi\0" \
